@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # MongoDB Database Container
+  mongodb:
+    image: mongo:latest
+    container_name: buildverse-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: buildverse
+    volumes:
+      - mongodb_data:/data/db
+
+  # Backend Express & Mongoose API Server
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: buildverse-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: 5000
+      MONGO_URI: mongodb://mongodb:27017/buildverse
+      JWT_SECRET: super-secret-buildverse-jwt-token-key
+      CORS_ORIGIN: "*"
+    depends_on:
+      - mongodb
+
+  # Web Application & Frontend Container
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: buildverse-frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    environment:
+      NODE_ENV: production
+      PORT: 5173
+    depends_on:
+      - backend
+
+volumes:
+  mongodb_data:
+    driver: local

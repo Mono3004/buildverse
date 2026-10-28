@@ -1,0 +1,9 @@
+{
+  "name": "buildverse-repo",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "react": "^19.0.0",
+    "lucide-react": "^0.475.0"
+  }
+}
